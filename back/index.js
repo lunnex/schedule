@@ -12,11 +12,32 @@ const app = express();
 const initializedModels = models.initModels(sequelize);
 
 
-app.get('/api/lessons', async (req, res) => {
-    dataToSend = initializedModels.lesson.findAll();
+app.post('/api/get-lessons', async (req, res) => {
+    dataToSend = initializedModels.lesson.findAll(
+      {
+        include: { all: true, nested: true }
+      }
+    );
     dataToSend = await dataToSend;
     res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.json({ data: dataToSend });
+});
+
+app.post('/api/get-lessons-by-group', async (req, res) => {
+  console.log(req.query.groupId)
+  dataToSend = initializedModels.lesson.findAll(
+    {
+      include: 
+      { all: true, 
+        nested: true, 
+      },
+      where: {studentgroup : req.query.groupId} 
+
+    }
+  );
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
 });
 
 
@@ -27,6 +48,7 @@ app.get('/api/lessons', async (req, res) => {
 //});
 
 var cors = require('cors');
+const classtype = require("./models/classtype");
 app.use(cors());
  
 
