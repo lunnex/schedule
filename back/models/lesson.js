@@ -58,6 +58,14 @@ module.exports = function(sequelize, DataTypes) {
     date: {
       type: DataTypes.DATEONLY,
       allowNull: true
+    },
+    semestr: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'semestr',
+        key: 'id'
+      }
     }
   }, {
     sequelize,

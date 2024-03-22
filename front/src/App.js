@@ -6,7 +6,8 @@ const App = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:9090/api/lessons')
+    let groupId = 1
+    axios.post('http://localhost:9090/api/get-lessons-by-group', null, {params:{groupId}})
       .then(response => {
         const allLessons = response.data.data;
         setData(allLessons)
@@ -22,17 +23,21 @@ const App = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
+            <th>Группа</th>
+            <th>Пара</th>
+            <th>Предмет</th>
+            <th>Преподаватель</th>
+            <th>Аудитория</th>
           </tr>
         </thead>
         <tbody>
           {data.map(item => (
             <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.classroom}</td>
-              <td>{item.timeslot}</td>
+              <td>{item.studentgroup_studentgroup.name}</td>
+              <td>{item.timeslot_timeslot.number}  {item.timeslot_timeslot.starttime} - {item.timeslot_timeslot.endtime}</td>
+              <td>{item.subject_subject.name}</td>
+              <td>{item.staff_staff.fio}</td>
+              <td>{item.classroom_classroom.name}</td>
             </tr>
           ))}
         </tbody>

@@ -6,6 +6,7 @@ var _department = require("./department");
 var _housing = require("./housing");
 var _jobtitle = require("./jobtitle");
 var _lesson = require("./lesson");
+var _semestr = require("./semestr");
 var _staff = require("./staff");
 var _studentgroup = require("./studentgroup");
 var _subject = require("./subject");
@@ -19,6 +20,7 @@ function initModels(sequelize) {
   var housing = _housing(sequelize, DataTypes);
   var jobtitle = _jobtitle(sequelize, DataTypes);
   var lesson = _lesson(sequelize, DataTypes);
+  var semestr = _semestr(sequelize, DataTypes);
   var staff = _staff(sequelize, DataTypes);
   var studentgroup = _studentgroup(sequelize, DataTypes);
   var subject = _subject(sequelize, DataTypes);
@@ -36,6 +38,8 @@ function initModels(sequelize) {
   housing.hasMany(classroom, { as: "classrooms", foreignKey: "housingid"});
   staff.belongsTo(jobtitle, { as: "jobtitle_jobtitle", foreignKey: "jobtitle"});
   jobtitle.hasMany(staff, { as: "staffs", foreignKey: "jobtitle"});
+  lesson.belongsTo(semestr, { as: "semestr_semestr", foreignKey: "semestr"});
+  semestr.hasMany(lesson, { as: "lessons", foreignKey: "semestr"});
   lesson.belongsTo(staff, { as: "staff_staff", foreignKey: "staff"});
   staff.hasMany(lesson, { as: "lessons", foreignKey: "staff"});
   lesson.belongsTo(studentgroup, { as: "studentgroup_studentgroup", foreignKey: "studentgroup"});
@@ -53,6 +57,7 @@ function initModels(sequelize) {
     housing,
     jobtitle,
     lesson,
+    semestr,
     staff,
     studentgroup,
     subject,

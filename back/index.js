@@ -4,12 +4,18 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize("schedule", "ilya", "111", {
   dialect: "postgres"
 });
+//const Lesson  = require('./models/lesson');
+const bodyParser = require('body-parser');
 
 
  
 const PORT = process.env.PORT || 9090;
 const app = express();
 const initializedModels = models.initModels(sequelize);
+
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
+
 
 
 app.post('/api/get-lessons', async (req, res) => {
@@ -24,7 +30,6 @@ app.post('/api/get-lessons', async (req, res) => {
 });
 
 app.post('/api/get-lessons-by-group', async (req, res) => {
-  console.log(req.query.groupId)
   dataToSend = initializedModels.lesson.findAll(
     {
       include: 
@@ -40,6 +45,89 @@ app.post('/api/get-lessons-by-group', async (req, res) => {
   res.json({ data: dataToSend });
 });
 
+app.post('/api/get-classroom', async (req, res) => {
+  dataToSend = initializedModels.classroom.findAll(
+    {
+      include: { all: true, nested: true }
+    }
+  );
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/get-classtype', async (req, res) => {
+  dataToSend = initializedModels.classtype.findAll({});
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/get-staff', async (req, res) => {
+  dataToSend = initializedModels.classroom.findAll(
+    {
+      include: { all: true, nested: true }
+    }
+  );
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/get-studentgroup', async (req, res) => {
+  dataToSend = initializedModels.studentgroup.findAll();
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/get-subject', async (req, res) => {
+  dataToSend = initializedModels.subject.findAll();
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/get-timeslot', async (req, res) => {
+  dataToSend = initializedModels.timeslot.findAll();
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+app.post('/api/update-lesson', async (req, res) => {
+  try 
+  {
+    data = initializedModels.lesson.findAll
+    (
+      {
+        where: {id : req.query.id} 
+      }
+    );
+    data = await data;
+    data = data[0]
+  
+    data.classroom = req.query.classroom
+    data.timeslot = req.query.timeslot
+    data.subject = req.query.subject
+    data.staff = req.query.staff
+    data.studentgroup = req.query.studentgroup
+    data.classtype = req.query.classtype
+    data.date = req.query.date
+    data.semestr = req.query.semestr
+    data.save()
+  
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.json({ data: "200" });
+  }
+  catch
+  {
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.json({ data: "500" });
+  }
+  
+});
+
 
  
 //app.use((req, res, next) => {
@@ -47,8 +135,75 @@ app.post('/api/get-lessons-by-group', async (req, res) => {
 //  next();
 //});
 
+
+/// Для групповых операций над занятиями 
+/*
+  subject
+  staff
+  group
+  semestr
+  dayInWeek
+  OnceAWeek
+  OnceInTwoWeeks
+  OnceInFourWeeks
+  IsDenominator
+  beforeScheduleChanging
+  afterScheduleChanging
+*/
+
+
+app.post('/api/create-lessons', async (req, res) => {
+  const semestr = await initializedModels.semestr.findAll
+  (
+    {
+      where: {id : req.query.semestr} 
+    }
+  );
+  
+  currDate = new Date(Date.parse(req.query.date))
+  endDate = new Date(Date.parse(semestr[0].dataValues['enddate']))
+
+  while(currDate < endDate)
+  {
+    if(req.query.beforeScheduleChanging === 'true' && currDate > semestr.changeSheduleDate) break;
+    if(req.query.afterScheduleChanging === 'true' && currDate < semestr.changeSheduleDate) continue;
+
+    lessonInstance = initializedModels.lesson.build(
+    {
+      classroom: req.query.classroom,
+      timeslot: req.query.timeslot,
+      subject: req.query.subject,
+      staff: req.query.staff,
+      studentgroup: req.query.studentgroup,
+      classtype: req.query.classtype,
+      date : currDate,
+      semestr: semestr[0].dataValues['id']
+    });
+    lessonInstance.save()
+
+    if(req.query.OnceAWeek === 'true'){
+      currDate.setDate(currDate.getDate() + 7)
+    }
+    else if(req.query.OnceInTwoWeeks === 'true'){
+      currDate.setDate(currDate.getDate() + 14)
+    }
+    else{
+      currDate.setDate(currDate.getDate() + 28)
+    }
+  }
+
+  dataToSend = initializedModels.lesson.findAll();
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
+
 var cors = require('cors');
 const classtype = require("./models/classtype");
+const semestr = require("./models/semestr");
+const lesson = require("./models/lesson");
+const studentgroup = require("./models/studentgroup");
 app.use(cors());
  
 
