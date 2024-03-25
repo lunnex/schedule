@@ -115,6 +115,8 @@ app.post('/api/update-lesson', async (req, res) => {
     data.classtype = req.query.classtype
     data.date = req.query.date
     data.semestr = req.query.semestr
+    data.dayofweek = req.query.dayofweek
+    data.typeofweek = req.query.typeofweek
     data.save()
   
     res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -177,7 +179,9 @@ app.post('/api/create-lessons', async (req, res) => {
       studentgroup: req.query.studentgroup,
       classtype: req.query.classtype,
       date : currDate,
-      semestr: semestr[0].dataValues['id']
+      semestr: semestr[0].dataValues['id'],
+      dayofweek : req.query.dayofweek,
+      typeofweek : req.query.typeofweek
     });
     lessonInstance.save()
 

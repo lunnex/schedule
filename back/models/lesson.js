@@ -66,6 +66,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'semestr',
         key: 'id'
       }
+    },
+    dayofweek: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    typeofweek: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,
