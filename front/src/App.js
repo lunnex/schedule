@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import qs from 'qs'
 import Table from './components/table'
 
 
@@ -33,13 +34,26 @@ const App = () => {
       });
   }
 
+  const deleteLessons = async (ids) => {
+    //console.log(ids)
+    await axios.post('http://localhost:9090/api/delete-lessons', null, { params: { ids }, paramsSerializer: params => {
+      return qs.stringify(params)} 
+    })
+    .then(response => {
+      return(200)
+    })
+    .catch(error => {
+      return(error)
+    });
+  }
+
   useEffect(() => {
     getLessons()
   }, [setData]);
 
   return (
     <div>
-      {lessons.length > 0 && <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {0}/>}
+      {lessons.length > 0 && <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {0} deleteLessons = {deleteLessons}/>}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 const models = require("./models/init-models");
 const express = require("express");
+const qs = require("qs")
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize("schedule", "ilya", "111", {
   dialect: "postgres"
@@ -130,7 +131,26 @@ app.post('/api/update-lesson', async (req, res) => {
   
 });
 
-
+app.post('/api/delete-lessons', async (req, res) => {
+  try 
+  {
+    let ids = qs.parse(req.query['ids']);
+    let count = Object.keys(ids).length
+    for(let i = 0; i < count; i++)
+    {
+      initializedModels.lesson.destroy(
+      {
+        where: {
+          id: Number(ids[i])
+        }
+      })
+    }
+    res.json({ data: "200" })
+  }
+  catch(e)
+  {
+    res.json({ data: e })
+  }});
  
 //app.use((req, res, next) => {
 //  res.setHeader('Access-Control-Allow-Origin', '*');
@@ -201,6 +221,8 @@ app.post('/api/create-lessons', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.json({ data: dataToSend });
 });
+
+
 
 
 var cors = require('cors');
