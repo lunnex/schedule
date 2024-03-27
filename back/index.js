@@ -65,7 +65,7 @@ app.post('/api/get-classtype', async (req, res) => {
 });
 
 app.post('/api/get-staff', async (req, res) => {
-  dataToSend = initializedModels.classroom.findAll(
+  dataToSend = initializedModels.staff.findAll(
     {
       include: { all: true, nested: true }
     }
@@ -205,10 +205,7 @@ app.post('/api/create-lessons', async (req, res) => {
     });
     lessonInstance.save()
 
-    if(req.query.OnceAWeek === 'true'){
-      currDate.setDate(currDate.getDate() + 7)
-    }
-    else if(req.query.OnceInTwoWeeks === 'true'){
+    if(req.query.OnceInTwoWeeks === 'true'){
       currDate.setDate(currDate.getDate() + 14)
     }
     else{

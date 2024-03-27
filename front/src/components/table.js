@@ -37,7 +37,7 @@ class Table extends React.Component {
           }
       });
       
-      console.log(uniqueObjects)
+      //console.log(uniqueObjects)
       return { uniqueObjects, ids, dates };
     }
 
@@ -71,10 +71,8 @@ class Table extends React.Component {
     }
 
     render() {
-        return(
-          
-        <div>
-          <Modal></Modal>
+        return(         
+        <div>         
           <h1>{this.dayOfWeekCondition(this.props.dayofweek)}</h1>
         <table>
             <thead>
