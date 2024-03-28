@@ -70,6 +70,16 @@ class Table extends React.Component {
       return 0;
     }
 
+    deleteLessons(){
+
+    }
+
+    beginChanging(item){
+      this.props.setCurrentLessonState(item)
+      console.log('beginChanging')
+      this.props.openModal()
+    }
+
     render() {
         return(         
         <div>         
@@ -94,6 +104,10 @@ class Table extends React.Component {
                     <button onClick={() => this.props.deleteLessons(item.ids)}>
                         Удалить
                     </button>
+                    {<button onClick={this.beginChanging.bind(this, item)}>
+                        Изменить
+                    </button>
+                  }
                   </td>
                 </tr>
               ))}

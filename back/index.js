@@ -57,6 +57,17 @@ app.post('/api/get-classroom', async (req, res) => {
   res.json({ data: dataToSend });
 });
 
+app.post('/api/get-semestr', async (req, res) => {
+  dataToSend = initializedModels.semestr.findAll(
+    {
+      where: {id : req.query.id} 
+    }
+  );
+  dataToSend = await dataToSend;
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.json({ data: dataToSend });
+});
+
 app.post('/api/get-classtype', async (req, res) => {
   dataToSend = initializedModels.classtype.findAll({});
   dataToSend = await dataToSend;

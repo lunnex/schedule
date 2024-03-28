@@ -12,7 +12,9 @@ const App = () => {
   const [timeslot, setTimeslot] = useState([]);
   const [classtype, setClasstype] = useState([]);
   const [classroom, setClassroom] = useState([]);
+  const [semestr, setSemestr] = useState([]);
   const [modal, setModalState] = useState(false);
+  const [currentLesson, setCurrentLessonState] = useState(null);
 
 
   const getLessons = async () => {
@@ -108,8 +110,14 @@ const App = () => {
     });
   }
 
-  function handleNew() {
+  const openModal = () => {
+    console.log('open')
     setModalState(true);
+  }
+
+  const closeModal = () => {
+    console.log('closed')
+    setModalState(false);
   }
 
   useEffect(() => {
@@ -119,9 +127,17 @@ const App = () => {
 
   return (
     <div>
-      {lessons.length > 0 && <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {0} deleteLessons = {deleteLessons}/>}
-      <button onClick={handleNew}></button>
-      {modal && <Modal typeofweek = {0} studentgroup={1} semestr={1}></Modal>}
+      {lessons.length > 0 && 
+        <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {0}
+        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+        setCurrentLessonState = {setCurrentLessonState}/>
+      }
+
+      <button onClick={openModal}>Добавить</button>
+
+      {modal && <Modal typeofweek = {0} studentgroup={1} 
+        semestr={1} closeModal = {closeModal} currentLesson = {currentLesson}></Modal>
+      }
     </div>
   );
 }

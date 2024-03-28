@@ -19,10 +19,11 @@ class StaticModal extends React.Component {
       date : '',
       frequency: '',
       duration: '',
-
     }
+
     this.updateInput = this.updateInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this)
   }
 
   updateInput(event, tochange){
@@ -45,7 +46,6 @@ class StaticModal extends React.Component {
       case 'duration':
         this.setState({duration : event.target.value})
     }
-
   }
     
   handleSubmit(){
@@ -84,7 +84,10 @@ class StaticModal extends React.Component {
     });
   }
 
-
+  handleClose(){
+    //console.log(this.props.currentLesson)
+    this.props.closeModal();
+  }
 
   staff = []
   subject = []
@@ -124,7 +127,6 @@ class StaticModal extends React.Component {
   }
 
   addLessons = async (ids) => {
-    //console.log(ids)
     await axios.post('http://localhost:9090/api/delete-lessons', null, { params: { ids }, paramsSerializer: params => {
       return qs.stringify(params)} 
     })
@@ -136,24 +138,6 @@ class StaticModal extends React.Component {
     });
   }
 
-  onFormSubmit(){
-
-    //console.log(staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek)
-
-    //axios.post('http://localhost:9090/api/delete-lessons', null, { 
-    //  params: { this.state }, paramsSerializer: params => {
-    //  return qs.stringify(params)} 
-    //})
-    //.then(response => {
-    //  return(200)
-    //})
-    //.catch(error => {
-    ///  return(error)
-    //});
-  }
-
-
-
   async componentDidMount()
   {
     await this.getStaff()
@@ -163,6 +147,27 @@ class StaticModal extends React.Component {
     await this.getClassroom()
     this.forceUpdate()
   }
+
+  //taken from https://stackoverflow.com/questions/22859704/number-of-weeks-between-two-dates-using-javascript
+  weeksBetween(d1, d2) 
+  {
+    d1 = new Date(d1)
+    d2 = new Date(d2)
+    return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+  }
+
+  getMaxDate(dates)
+  {
+    dates = dates.map(item => new Date(item))
+    return new Date(Math.max.apply(null,dates));
+  }
+
+  getMinDate(dates)
+  {
+    dates = dates.map(item => new Date(item))
+    return new Date(Math.min.apply(null,dates));
+  }    
+
 
   render(){
     return ( 
@@ -177,66 +182,81 @@ class StaticModal extends React.Component {
             Форма добавления новых занятий
             </Modal.Title> 
           </Modal.Header> 
-          <Modal.Body> 
+          <Modal.Body>
 
-          <Form onSubmit={this.onFormSubmit()}> 
+          <Form> 
             <p>Выберите предмет</p>
             <Form.Select aria-label="Выберите предмет" name="subject" onChange={e => this.updateInput(e, 'subject')}>
-            <option></option>
+            <option selected = {this.props.currentLesson == null}></option>
             {this.subject.map(item => 
-            <option value={item.id}>{item.name}</option>)
+            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.subject : false}>{item.name}</option>)
             }
             </Form.Select>
 
             <p>Выберите преподавателя</p>
             <Form.Select aria-label="Выберите преподавателя" name="staff" onChange={e => this.updateInput(e, 'staff')}>
-            <option></option>
+            <option selected = {this.props.currentLesson == null}></option>
             {this.staff.map(item => 
-            <option value={item.id}>{item.fio}</option>)
+            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.staff : false}>{item.fio}</option>)
             }
             </Form.Select>
 
             <p>Выберите пару</p>
             <Form.Select aria-label="Выберите пару" name="timeslot" onChange={e => this.updateInput(e, 'timeslot')}>
-            <option></option>
+            <option selected = {this.props.currentLesson == null}></option>
             {this.timeslot.map(item => 
-            <option value={item.id}>{item.number}</option>)
+            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.timeslot : false}>{item.number}</option>)
             }
             </Form.Select>
 
             <p>Выберите тип занятия</p>
             <Form.Select aria-label="Выберите тип занятия" name="classtype" onChange={e => this.updateInput(e, 'classtype')}>
-            <option></option>
+            <option selected = {this.props.currentLesson == null}></option>
             {this.classtype.map(item => 
-            <option value={item.id}>{item.name}</option>)
+            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classtype : false}>{item.name}</option>)
             }
             </Form.Select>
 
             <p>Выберите аудиторию</p>
             <Form.Select aria-label="Выберите аудиторию" name="classroom" onChange={e => this.updateInput(e, 'classroom')}>
-            <option></option>
+            <option selected = {this.props.currentLesson == null}></option>
             {this.classroom.map(item => 
-            <option value={item.id}>{item.name}</option>)
+            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classroom : false}>{item.name}</option>)
             }
             </Form.Select>
             
             <p>Дата первого занятия в семестре</p>
-            <input type="date" name="firstdate" onChange={e => this.updateInput(e, 'date')}/>
+            <input type="date" name="firstdate"  
+            value = {this.props.currentLesson != null ? this.props.currentLesson.dates[this.props.currentLesson.dates.length - 1] : new Date()} onChange={e => this.updateInput(e, 'date')}/>
 
             <p>Каждый числитель/знаменатель</p>
-            <input type="radio" name="frequency" value = "0" onChange={e => this.updateInput(e, 'frequency')}/>
+            <input type="radio" name="frequency" value = "0" 
+            
+            checked = {this.props.currentLesson != null && (this.weeksBetween(new Date(this.props.currentLesson.semestr_semestr.startdate), new Date(this.props.currentLesson.semestr_semestr.enddate)) / 2 - 1
+                      < this.weeksBetween(this.getMinDate(this.props.currentLesson.dates), this.getMaxDate(this.props.currentLesson.dates)))} 
+            onChange={e => this.updateInput(e, 'frequency')}/>
 
             <p>Через один числитель/знаменатель</p>
-            <input type="radio" name="frequency" value = "1"  onChange={e => this.updateInput(e, 'frequency')}/>
+            <input type="radio" name="frequency" value = "1" 
+            
+            checked = {this.props.currentLesson != null && (this.weeksBetween(new Date(this.props.currentLesson.semestr_semestr.startdate), new Date(this.props.currentLesson.semestr_semestr.enddate)) / 2 - 1
+            >= this.weeksBetween(this.getMinDate(this.props.currentLesson.dates), this.getMaxDate(this.props.currentLesson.dates)))} 
+            onChange={e => this.updateInput(e, 'frequency')}/>
 
             <p>До смены расписания</p>
-            <input type="radio" name="duration" value = "0" onChange={e => this.updateInput(e, 'duration')}/>
+            <input type="radio" name="duration" value = "0" checked = {this.props.currentLesson != null && this.getMaxDate(this.props.currentLesson.dates) < new Date(this.props.currentLesson.semestr_semestr.changescheduledate) } 
+            onChange={e => this.updateInput(e, 'duration')}/>
 
             <p>После смены расписания</p>
-            <input type="radio" name="duration" value = "1" onChange={e => this.updateInput(e, 'duration')}/>
+            <input type="radio" name="duration" value = "1" checked = {this.props.currentLesson != null && this.getMinDate(this.props.currentLesson.dates) > new Date(this.props.currentLesson.semestr_semestr.changescheduledate) } 
+            onChange={e => this.updateInput(e, 'duration')}/>
 
             <p>До и после смены расписания</p>
-            <input type="radio" name="duration" value = "2" onChange={e => this.updateInput(e, 'duration')}/>
+            <input type="radio" name="duration" value = "2" 
+            
+            checked = {this.props.currentLesson != null && this.getMinDate(this.props.currentLesson.dates) < new Date(this.props.currentLesson.semestr_semestr.changescheduledate) &&
+                      this.getMaxDate(this.props.currentLesson.dates) > new Date(this.props.currentLesson.semestr_semestr.changescheduledate)} 
+            onChange={e => this.updateInput(e, 'duration')}/>
 
           </Form>
           </Modal.Body> 
@@ -244,7 +264,7 @@ class StaticModal extends React.Component {
             <Button variant="primary" onClick={this.handleSubmit}> 
             Save changes 
             </Button> 
-            <Button variant="secondary"> 
+            <Button variant="secondary"onClick={this.handleClose}> 
             Close 
             </Button> 
           </Modal.Footer> 
