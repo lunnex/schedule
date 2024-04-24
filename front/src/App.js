@@ -23,6 +23,7 @@ const App = () => {
 
     await axios.post('http://localhost:9090/api/get-lessons-by-group', null, { params: { groupId } })
       .then(response => {
+        
         const allLessons = response.data.data;
         var grouped = []
 
@@ -34,6 +35,8 @@ const App = () => {
             return o[a[g]];
           }, grouped).push(a);
         });
+
+        console.log(grouped)
 
         setData(grouped)
       })
@@ -127,16 +130,29 @@ const App = () => {
 
   return (
     <div>
-      {lessons.length > 0 && 
-        <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {0}
+      {lessons[0].length > 0 && 
+        <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
         deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
-        setCurrentLessonState = {setCurrentLessonState}/>
+        setCurrentLessonState = {setCurrentLessonState}/> 
       }
+
+      {lessons[0].length > 1 && 
+        <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
+        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+        setCurrentLessonState = {setCurrentLessonState}/> 
+      }
+
+      {lessons[0].length > 2 && 
+        <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
+        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+        setCurrentLessonState = {setCurrentLessonState}/> 
+      }
+
 
       <button onClick={openModal}>Добавить</button>
 
       {modal && <Modal typeofweek = {0} studentgroup={1} 
-        semestr={1} closeModal = {closeModal} currentLesson = {currentLesson}></Modal>
+        semestr={1} closeModal = {closeModal} currentLesson = {currentLesson} deleteLessons = {deleteLessons}></Modal>
       }
     </div>
   );

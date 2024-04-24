@@ -10,48 +10,85 @@ class StaticModal extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      currentStaff : '',
-      currentSubject : '',
-      currentTimeslot : '',
-      currentClasstype : '',
-      currentClassroom : '',
-      date : '',
-      frequency: '',
-      duration: '',
+
+    if(props.currentLesson !== null){
+      this.state = {
+        currentStaff : props.currentLesson.staff,
+        currentSubject : props.currentLesson.subject,
+        currentTimeslot : props.currentLesson.timeslot,
+        currentClasstype : props.currentLesson.classtype,
+        currentClassroom : props.currentLesson.classroom,
+        date : props.currentLesson.date,
+        frequency: props.currentLesson.frequency,
+        duration: props.currentLesson.duration,
+      }
+    }
+    else{
+      this.state = {
+        currentStaff : '',
+        currentSubject : '',
+        currentTimeslot : '',
+        currentClasstype : '',
+        currentClassroom : '',
+        date : '',
+        frequency: '',
+        duration: '',
+      }
     }
 
-    this.updateInput = this.updateInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClose = this.handleClose.bind(this)
   }
 
-  updateInput(event, tochange){
-    console.log(tochange)
-    switch(tochange){
-      case 'subject':
-        this.setState({currentSubject : event.target.value})
-      case 'staff':
-        this.setState({currentStaff : event.target.value})
-      case 'timeslot':
-        this.setState({currentTimeslot : event.target.value})
-      case 'classtype':
-        this.setState({currentClasstype : event.target.value})
-      case 'classroom':
-        this.setState({currentClassroom : event.target.value})
-      case 'date':
-        this.setState({date : event.target.value})
-      case 'frequency':
-        this.setState({frequency : event.target.value})
-      case 'duration':
-        this.setState({duration : event.target.value})
-    }
+  async updateSubject(event){
+    console.log(this.props.currentLesson)
+    await this.setState({currentSubject : event.target.value})
+    console.log(this.state)
+  }
+
+  async updateStaff(event){
+    await this.setState({currentStaff : event.target.value})
+    console.log(this.state)
+  }
+
+  async updateTimeslot(event){
+    await this.setState({currentTimeslot : event.target.value})
+    console.log(this.state)
+  }
+
+  async updateClasstype(event){
+    await this.setState({currentClasstype : event.target.value})
+    console.log(this.state)
+  }
+
+  async updateClassroom(event){
+    await this.setState({currentClassroom : event.target.value})
+    console.log(this.state)
+  }
+
+  async updateDate(event){
+    await this.setState({date: event.target.value})
+    console.log(this.state)
+  }
+
+  async updateFrequency(event){
+    await this.setState({frequency: event.target.value})
+    console.log(this.state)
+  }
+
+  async updateDuration(event){
+    await this.setState({duration: event.target.value})
+    console.log(this.state)
   }
     
   handleSubmit(){
-    console.log(this.state.duration)
+    if(this.props.currentLesson !== null){
+      console.log(this.props.currentLesson.ids)
+      this.props.deleteLessons(this.props.currentLesson.ids)
+    }
+
     var OnceInTwoWeeks = false
-    if(this.state.frequency === '0')
+    if(this.state.frequency === '0' && this.state.frequency !== undefined)
       OnceInTwoWeeks = true
 
     var beforeScheduleChanging = false
@@ -68,11 +105,10 @@ class StaticModal extends React.Component {
     let classroom = this.state.currentClassroom
     let date = this.state.date 
     let typeofweek = this.props.typeofweek
-    let dayofweek = (new Date(this.state.date)).getDay()
+    let dayofweek = (new Date(this.state.date)).getDay().toString()
     let studentgroup = this.props.studentgroup
     let semestr = this.props.semestr
 
-    console.log(staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging)
     axios.post('http://localhost:9090/api/create-lessons', null, { 
       params: { staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging, studentgroup, semestr } 
     })
@@ -82,6 +118,9 @@ class StaticModal extends React.Component {
     .catch(error => {
       return(error)
     });
+
+    this.forceUpdate();
+
   }
 
   handleClose(){
@@ -186,86 +225,77 @@ class StaticModal extends React.Component {
 
           <Form> 
             <p>Выберите предмет</p>
-            <Form.Select aria-label="Выберите предмет" name="subject" onChange={e => this.updateInput(e, 'subject')}>
-            <option selected = {this.props.currentLesson == null}></option>
+            <Form.Select aria-label="Выберите предмет" name="subject" onChange={e => this.updateSubject(e)}>
             {this.subject.map(item => 
             <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.subject : false}>{item.name}</option>)
             }
+            <option selected = {this.props.currentLesson == null}></option>
             </Form.Select>
 
             <p>Выберите преподавателя</p>
-            <Form.Select aria-label="Выберите преподавателя" name="staff" onChange={e => this.updateInput(e, 'staff')}>
-            <option selected = {this.props.currentLesson == null}></option>
+            <Form.Select aria-label="Выберите преподавателя" name="staff" onChange={e => this.updateStaff(e)}>
             {this.staff.map(item => 
             <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.staff : false}>{item.fio}</option>)
             }
+            <option selected = {this.props.currentLesson == null}></option>
             </Form.Select>
 
             <p>Выберите пару</p>
-            <Form.Select aria-label="Выберите пару" name="timeslot" onChange={e => this.updateInput(e, 'timeslot')}>
-            <option selected = {this.props.currentLesson == null}></option>
+            <Form.Select aria-label="Выберите пару" name="timeslot" onChange={e => this.updateTimeslot(e)}>
             {this.timeslot.map(item => 
             <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.timeslot : false}>{item.number}</option>)
             }
+            <option selected = {this.props.currentLesson == null}></option>
             </Form.Select>
 
             <p>Выберите тип занятия</p>
-            <Form.Select aria-label="Выберите тип занятия" name="classtype" onChange={e => this.updateInput(e, 'classtype')}>
-            <option selected = {this.props.currentLesson == null}></option>
+            <Form.Select aria-label="Выберите тип занятия" name="classtype" onChange={e => this.updateClasstype(e)}>
             {this.classtype.map(item => 
             <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classtype : false}>{item.name}</option>)
             }
+            <option selected = {this.props.currentLesson == null}></option>
             </Form.Select>
 
             <p>Выберите аудиторию</p>
-            <Form.Select aria-label="Выберите аудиторию" name="classroom" onChange={e => this.updateInput(e, 'classroom')}>
-            <option selected = {this.props.currentLesson == null}></option>
+            <Form.Select aria-label="Выберите аудиторию" name="classroom" onChange={e => this.updateClassroom(e)}>
             {this.classroom.map(item => 
             <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classroom : false}>{item.name}</option>)
             }
+            <option selected = {this.props.currentLesson == null}></option>
             </Form.Select>
             
             <p>Дата первого занятия в семестре</p>
             <input type="date" name="firstdate"  
-            value = {this.props.currentLesson != null ? this.props.currentLesson.dates[this.props.currentLesson.dates.length - 1] : new Date()} onChange={e => this.updateInput(e, 'date')}/>
+            onChange={e => this.updateDate(e)}/>
 
             <p>Каждый числитель/знаменатель</p>
             <input type="radio" name="frequency" value = "0" 
-            
-            checked = {this.props.currentLesson != null && (this.weeksBetween(new Date(this.props.currentLesson.semestr_semestr.startdate), new Date(this.props.currentLesson.semestr_semestr.enddate)) / 2 - 1
-                      < this.weeksBetween(this.getMinDate(this.props.currentLesson.dates), this.getMaxDate(this.props.currentLesson.dates)))} 
-            onChange={e => this.updateInput(e, 'frequency')}/>
+            onChange={e => this.updateFrequency(e)}/>
 
             <p>Через один числитель/знаменатель</p>
             <input type="radio" name="frequency" value = "1" 
-            
-            checked = {this.props.currentLesson != null && (this.weeksBetween(new Date(this.props.currentLesson.semestr_semestr.startdate), new Date(this.props.currentLesson.semestr_semestr.enddate)) / 2 - 1
-            >= this.weeksBetween(this.getMinDate(this.props.currentLesson.dates), this.getMaxDate(this.props.currentLesson.dates)))} 
-            onChange={e => this.updateInput(e, 'frequency')}/>
+            onChange={e => this.updateFrequency(e)}/>
 
             <p>До смены расписания</p>
-            <input type="radio" name="duration" value = "0" checked = {this.props.currentLesson != null && this.getMaxDate(this.props.currentLesson.dates) < new Date(this.props.currentLesson.semestr_semestr.changescheduledate) } 
-            onChange={e => this.updateInput(e, 'duration')}/>
+            <input type="radio" name="duration" value = "0"
+            onChange={e => this.updateDuration(e)}/>
 
             <p>После смены расписания</p>
-            <input type="radio" name="duration" value = "1" checked = {this.props.currentLesson != null && this.getMinDate(this.props.currentLesson.dates) > new Date(this.props.currentLesson.semestr_semestr.changescheduledate) } 
-            onChange={e => this.updateInput(e, 'duration')}/>
+            <input type="radio" name="duration" value = "1"
+            onChange={e => this.updateDuration(e)}/>
 
             <p>До и после смены расписания</p>
             <input type="radio" name="duration" value = "2" 
-            
-            checked = {this.props.currentLesson != null && this.getMinDate(this.props.currentLesson.dates) < new Date(this.props.currentLesson.semestr_semestr.changescheduledate) &&
-                      this.getMaxDate(this.props.currentLesson.dates) > new Date(this.props.currentLesson.semestr_semestr.changescheduledate)} 
-            onChange={e => this.updateInput(e, 'duration')}/>
+            onChange={e => this.updateDuration(e)}/>
 
           </Form>
           </Modal.Body> 
           <Modal.Footer> 
             <Button variant="primary" onClick={this.handleSubmit}> 
-            Save changes 
+            Сохранить
             </Button> 
             <Button variant="secondary"onClick={this.handleClose}> 
-            Close 
+            Закрыть
             </Button> 
           </Modal.Footer> 
         </Modal.Dialog> 

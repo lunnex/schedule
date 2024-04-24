@@ -43,17 +43,17 @@ class Table extends React.Component {
 
     dayOfWeekCondition(dayNum) {
       switch(dayNum) {
-        case 0:
-          return 'Понедельник';
         case 1:
-          return 'Вторник';
+          return 'Понедельник';
         case 2:
-          return 'Среда';
+          return 'Вторник';
         case 3:
-          return 'Четверг';
+          return 'Среда';
         case 4:
-          return 'Пятница';
+          return 'Четверг';
         case 5:
+          return 'Пятница';
+        case 6:
           return 'Суббота';
         default:
           return 'foo';
