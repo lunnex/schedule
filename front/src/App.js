@@ -7,97 +7,51 @@ import Modal from "./components/modal";
 
 const App = () => {
   const [lessons, setData] = useState([]);
-  const [staff, setStaff] = useState([]);
-  const [subject, setSubject] = useState([]);
-  const [timeslot, setTimeslot] = useState([]);
-  const [classtype, setClasstype] = useState([]);
-  const [classroom, setClassroom] = useState([]);
-  const [semestr, setSemestr] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [modal, setModalState] = useState(false);
   const [currentLesson, setCurrentLessonState] = useState(null);
+  const [selectedGroupId, setGroupId] = useState(1);
 
-
-  const getLessons = async () => {
-    let groupId = 1
+  const getLessons = async (id) => {
+    let groupId = id
     let semestr = 1
-
-    await axios.post('http://localhost:9090/api/get-lessons-by-group', null, { params: { groupId } })
-      .then(response => {
+    //console.log('aaaaa')
+    var grouped = []
         
-        const allLessons = response.data.data;
-        var grouped = []
-
-        //taken from https://stackoverflow.com/questions/35506433/grouping-by-multiple-fields-per-object
-        var groups = ['typeofweek', 'dayofweek']
-        allLessons.forEach(function (a) {
-          groups.reduce(function (o, g, i) {
-            o[a[g]] = o[a[g]] || (i + 1 === groups.length ? [] : {});
-            return o[a[g]];
-          }, grouped).push(a);
-        });
-
-        console.log(grouped)
-
-        setData(grouped)
-      })
-      .catch(error => {
-        console.error('Error fetching data: ', error);
+    try {
+      const response = await axios.post('http://localhost:9090/api/get-lessons-by-group', null, { params: { groupId } })
+      const allLessons = response.data.data;
+      //taken from https://stackoverflow.com/questions/35506433/grouping-by-multiple-fields-per-object
+      var groups = ['typeofweek', 'dayofweek']
+      allLessons.forEach(function (a) {
+        groups.reduce(function (o, g, i) {
+          o[a[g]] = o[a[g]] || (i + 1 === groups.length ? [] : {});
+          return o[a[g]];
+        }, grouped).push(a);
       });
+
+      setData(grouped)
+      console.log(grouped)
+    } catch (err) {
+      setError(err);
+
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const getStaff = async () => {
-    await axios.post('http://localhost:9090/api/get-staff')
-    .then(response => {
-      const staff = response.data.data
-      setStaff(staff)
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
-  }
+  const getGroups = async () => {
+    try {
+      const response = await axios.post('http://localhost:9090/api/get-studentgroup')
+      setGroups(response.data.data)
+    } catch (err) {
+      setError(err);
 
-  const getSubject = async () => {
-    await axios.post('http://localhost:9090/api/get-subject')
-    .then(response => {
-      const subject = response.data.data
-      setSubject(subject)
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
-  }
-
-  const getTimeslot = async () => {
-    await axios.post('http://localhost:9090/api/get-timeslot')
-    .then(response => {
-      const timeslot = response.data.data
-      setTimeslot(timeslot)
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
-  }
-
-  const getClassType = async () => {
-    await axios.post('http://localhost:9090/api/get-classtype')
-    .then(response => {
-      const classType = response.data.data
-      setClasstype(classType)
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
-  }
-
-  const getClassroom = async () => {
-    this.classroom = await (await axios.post('http://localhost:9090/api/get-classroom'))
-    .then(response =>{
-      const classroom = response.data.data
-      setClassroom(classroom)
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const deleteLessons = async (ids) => {
@@ -123,38 +77,87 @@ const App = () => {
     setModalState(false);
   }
 
-  useEffect(() => {
-    getLessons()
-  }, [setData]);
+  const handleGroupChange = (e) => {
+    setGroupId(e.target.value);
+  };
 
+  useEffect(() => {
+    getGroups();
+    getLessons(selectedGroupId);
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <div>
-      {lessons[0].length > 0 && 
-        <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
-        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
-        setCurrentLessonState = {setCurrentLessonState}/> 
+    <label htmlFor="group-select">Группа: </label>
+      <select id="group-select" onChange={handleGroupChange} value={selectedGroupId}>
+      {groups.map((group) => (
+          <option key={group.id} value={group.id}>{group.value}</option>))
       }
+      </select>
 
-      {lessons[0].length > 1 && 
-        <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
-        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
-        setCurrentLessonState = {setCurrentLessonState}/> 
-      }
+    <table>
+      <tr>
+        <td>
+          {lessons && 
+          <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
+          deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+          setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
 
-      {lessons[0].length > 2 && 
-        <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
-        deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
-        setCurrentLessonState = {setCurrentLessonState}/> 
-      }
+        <td>
+          {lessons && 
+            <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
 
+        <td>
+          {lessons && 
+            <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons && 
+            <Table data={lessons[0][4]} typeofweek = {0} dayofweek = {4}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons && 
+            <Table data={lessons[0][5]} typeofweek = {0} dayofweek = {5}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons && 
+            <Table data={lessons[0][6]} typeofweek = {0} dayofweek = {6}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+      </tr>
+      
 
       <button onClick={openModal}>Добавить</button>
 
       {modal && <Modal typeofweek = {0} studentgroup={1} 
         semestr={1} closeModal = {closeModal} currentLesson = {currentLesson} deleteLessons = {deleteLessons}></Modal>
       }
-    </div>
+    </table>
+</div>
   );
 }
 
