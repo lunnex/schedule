@@ -10,6 +10,8 @@ class Table extends React.Component {
       const uniqueObjects = [];
       const ids = [];
       const dates = [];
+
+      if (!arr) return { uniqueObjects, ids, dates };
   
       arr.forEach((obj, index) => {
         obj['ids'] = []
@@ -83,7 +85,7 @@ class Table extends React.Component {
     render() {
         return(         
         <div>         
-          <h1>{this.dayOfWeekCondition(this.props.dayofweek)}</h1>
+          <h2>{this.dayOfWeekCondition(this.props.dayofweek)}</h2>
         <table>
             <thead>
               <th>Пара</th>
@@ -99,7 +101,7 @@ class Table extends React.Component {
                   <p>{item.subject_subject.name}</p>
                   <p>{item.staff_staff.fio}</p>
                   <p>{item.classroom_classroom.name}</p>
-                  <p>{item.dates.map(i => {return i + '; '})}</p>
+                  <p>{item.dates.length < 8 ? item.dates.map(i => {return i + '; '}) : ''}</p>
                   <td>
                     <button onClick={() => this.props.deleteLessons(item.ids)}>
                         Удалить

@@ -17,8 +17,10 @@ const App = () => {
   const getLessons = async (id) => {
     let groupId = id
     let semestr = 1
-    //console.log('aaaaa')
+    //console.log(groupId)
     var grouped = []
+
+    setLoading(true);
         
     try {
       const response = await axios.post('http://localhost:9090/api/get-lessons-by-group', null, { params: { groupId } })
@@ -33,7 +35,7 @@ const App = () => {
       });
 
       setData(grouped)
-      console.log(grouped)
+      console.log(lessons)
     } catch (err) {
       setError(err);
 
@@ -43,6 +45,7 @@ const App = () => {
   }
 
   const getGroups = async () => {
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:9090/api/get-studentgroup')
       setGroups(response.data.data)
@@ -78,13 +81,19 @@ const App = () => {
   }
 
   const handleGroupChange = (e) => {
+    //setLoading(true)
+    setLoading(true)
     setGroupId(e.target.value);
+    getLessons(selectedGroupId);
+    setLoading(false)
+
   };
 
   useEffect(() => {
-    getGroups();
     getLessons(selectedGroupId);
-  }, []);
+    getGroups();
+
+  }, [selectedGroupId]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -94,14 +103,16 @@ const App = () => {
     <label htmlFor="group-select">Группа: </label>
       <select id="group-select" onChange={handleGroupChange} value={selectedGroupId}>
       {groups.map((group) => (
-          <option key={group.id} value={group.id}>{group.value}</option>))
+          <option key={group.id} value={group.id}>{group.name}</option>))
       }
       </select>
 
+
     <table>
+      <h1>Числитель</h1>
       <tr>
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][1] && 
           <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
           deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
           setCurrentLessonState = {setCurrentLessonState}/> 
@@ -109,7 +120,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][2] && 
             <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -117,15 +128,18 @@ const App = () => {
         </td>
 
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][3] && 
             <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
         </td>
+        </tr>
+
+        <tr>
 
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][4] && 
             <Table data={lessons[0][4]} typeofweek = {0} dayofweek = {4}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -133,7 +147,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][5] && 
             <Table data={lessons[0][5]} typeofweek = {0} dayofweek = {5}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -141,19 +155,72 @@ const App = () => {
         </td>
 
         <td>
-          {lessons && 
+          {lessons.length > 0 && lessons[0][6] && 
             <Table data={lessons[0][6]} typeofweek = {0} dayofweek = {6}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
         </td>
+      </tr>
 
+      <h1>Знаменатель</h1>
+      <tr>
+        <td>
+          {lessons.length > 0 && lessons[1][1] && 
+          <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
+          deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+          setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons.length > 0 && lessons[1][2] && 
+            <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons.length > 0 && lessons[1][3] && 
+            <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+        </tr>
+
+        <tr>
+
+        <td>
+          {lessons.length > 0 && lessons[1][4] && 
+            <Table data={lessons[0][4]} typeofweek = {0} dayofweek = {4}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons.length > 0 && lessons[1][5] && 
+            <Table data={lessons[0][5]} typeofweek = {0} dayofweek = {5}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
+
+        <td>
+          {lessons.length > 0 && lessons[1][6] && 
+            <Table data={lessons[0][6]} typeofweek = {0} dayofweek = {6}
+            deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
+            setCurrentLessonState = {setCurrentLessonState}/> 
+          }
+        </td>
       </tr>
       
 
       <button onClick={openModal}>Добавить</button>
 
-      {modal && <Modal typeofweek = {0} studentgroup={1} 
+      {modal && <Modal typeofweek = {0} studentgroup={selectedGroupId} 
         semestr={1} closeModal = {closeModal} currentLesson = {currentLesson} deleteLessons = {deleteLessons}></Modal>
       }
     </table>

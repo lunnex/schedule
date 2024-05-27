@@ -18,6 +18,7 @@ class StaticModal extends React.Component {
         currentTimeslot : props.currentLesson.timeslot,
         currentClasstype : props.currentLesson.classtype,
         currentClassroom : props.currentLesson.classroom,
+        typeofweek : '',
         date : props.currentLesson.date,
         frequency: props.currentLesson.frequency,
         duration: props.currentLesson.duration,
@@ -30,6 +31,7 @@ class StaticModal extends React.Component {
         currentTimeslot : '',
         currentClasstype : '',
         currentClassroom : '',
+        typeofweek : '',
         date : '',
         frequency: '',
         duration: '',
@@ -80,8 +82,12 @@ class StaticModal extends React.Component {
     await this.setState({duration: event.target.value})
     console.log(this.state)
   }
+
+  //async handleSubmit(){
+  //  await this.getSemestr();
+  //}
     
-  handleSubmit(){
+  async handleSubmit(){
     if(this.props.currentLesson !== null){
       console.log(this.props.currentLesson.ids)
       this.props.deleteLessons(this.props.currentLesson.ids)
@@ -98,13 +104,15 @@ class StaticModal extends React.Component {
     if(this.state.duration === '1')
       afterScheduleChanging = true
 
+    await this.getSemestr();
+
     let staff = this.state.currentStaff
     let subject = this.state.currentSubject
     let timeslot = this.state.currentTimeslot
     let classtype = this.state.currentClasstype
     let classroom = this.state.currentClassroom
     let date = this.state.date 
-    let typeofweek = this.props.typeofweek
+    let typeofweek = this.typeofweek ?? 0
     let dayofweek = (new Date(this.state.date)).getDay().toString()
     let studentgroup = this.props.studentgroup
     let semestr = this.props.semestr
@@ -133,6 +141,8 @@ class StaticModal extends React.Component {
   timeslot = []
   classtype = []
   classroom = []
+  semestr = []
+  typeofweek = ''
 
   state = {
     currentStaff : ''
@@ -165,6 +175,14 @@ class StaticModal extends React.Component {
     this.classroom = await (await axios.post('http://localhost:9090/api/get-classroom')).data.data
   }
 
+  getSemestr = async () => {
+    let propSemestr = this.props.semestr
+    this.semestr = await (await axios.post('http://localhost:9090/api/get-semestr', null, {params: {id: propSemestr}})).data.data[0]
+    console.log(this.semestr)
+    this.typeofweek = this.weeksBetween(this.semestr.startdate, this.state.date) % 2
+    console.log(this.typeofweek)
+  }
+
   addLessons = async (ids) => {
     await axios.post('http://localhost:9090/api/delete-lessons', null, { params: { ids }, paramsSerializer: params => {
       return qs.stringify(params)} 
@@ -190,6 +208,8 @@ class StaticModal extends React.Component {
   //taken from https://stackoverflow.com/questions/22859704/number-of-weeks-between-two-dates-using-javascript
   weeksBetween(d1, d2) 
   {
+    if (!d1 || !d2) return 0
+
     d1 = new Date(d1)
     d2 = new Date(d2)
     return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
