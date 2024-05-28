@@ -116,9 +116,10 @@ class StaticModal extends React.Component {
     let dayofweek = (new Date(this.state.date)).getDay().toString()
     let studentgroup = this.props.studentgroup
     let semestr = this.props.semestr
+    let frequency = this.state.frequency
 
     axios.post('http://localhost:9090/api/create-lessons', null, { 
-      params: { staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging, studentgroup, semestr } 
+      params: { staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging, studentgroup, semestr, frequency } 
     })
     .then(response => {
       return(200)

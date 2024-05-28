@@ -72,10 +72,6 @@ class Table extends React.Component {
       return 0;
     }
 
-    deleteLessons(){
-
-    }
-
     beginChanging(item){
       this.props.setCurrentLessonState(item)
       console.log('beginChanging')

@@ -167,7 +167,7 @@ const App = () => {
       <tr>
         <td>
           {lessons.length > 0 && lessons[1][1] && 
-          <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
+          <Table data={lessons[1][1]} typeofweek = {1} dayofweek = {1}
           deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
           setCurrentLessonState = {setCurrentLessonState}/> 
           }
@@ -175,7 +175,7 @@ const App = () => {
 
         <td>
           {lessons.length > 0 && lessons[1][2] && 
-            <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
+            <Table data={lessons[1][2]} typeofweek = {1} dayofweek = {2}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
@@ -183,7 +183,7 @@ const App = () => {
 
         <td>
           {lessons.length > 0 && lessons[1][3] && 
-            <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
+            <Table data={lessons[1][3]} typeofweek = {1} dayofweek = {3}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
@@ -194,7 +194,7 @@ const App = () => {
 
         <td>
           {lessons.length > 0 && lessons[1][4] && 
-            <Table data={lessons[0][4]} typeofweek = {0} dayofweek = {4}
+            <Table data={lessons[1][4]} typeofweek = {1} dayofweek = {4}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
@@ -202,7 +202,7 @@ const App = () => {
 
         <td>
           {lessons.length > 0 && lessons[1][5] && 
-            <Table data={lessons[0][5]} typeofweek = {0} dayofweek = {5}
+            <Table data={lessons[1][5]} typeofweek = {1} dayofweek = {5}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }
@@ -210,7 +210,7 @@ const App = () => {
 
         <td>
           {lessons.length > 0 && lessons[1][6] && 
-            <Table data={lessons[0][6]} typeofweek = {0} dayofweek = {6}
+            <Table data={lessons[1][6]} typeofweek = {1} dayofweek = {6}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
           }

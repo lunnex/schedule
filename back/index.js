@@ -195,11 +195,18 @@ app.post('/api/create-lessons', async (req, res) => {
   
   currDate = new Date(Date.parse(req.query.date))
   endDate = new Date(Date.parse(semestr[0].dataValues['enddate']))
+  let beginDate = new Date(Date.parse(semestr[0].dataValues['startdate']))
+  let changeSheduleDate =  new Date(Date.parse(semestr[0].dataValues['changescheduledate']))
+  let lessonInstance = []
+  let weektype = Math.round(weeksBetween(beginDate, currDate) / 2)
 
   while(currDate < endDate)
   {
-    if(req.query.beforeScheduleChanging === 'true' && currDate > semestr.changeSheduleDate) break;
-    if(req.query.afterScheduleChanging === 'true' && currDate < semestr.changeSheduleDate) continue;
+    if(req.query.beforeScheduleChanging === 'true' && currDate > changeSheduleDate) break;
+    if(req.query.afterScheduleChanging === 'true' && currDate < changeSheduleDate){
+      currDate.setDate(currDate.getDate() + 7)
+       continue;
+      }
 
     lessonInstance = initializedModels.lesson.build(
     {
@@ -210,11 +217,11 @@ app.post('/api/create-lessons', async (req, res) => {
       studentgroup: req.query.studentgroup,
       classtype: req.query.classtype,
       date : currDate,
-      semestr: semestr[0].dataValues['id'],
+      semestr: semestr[0].dataValues['id'].toString(),
       dayofweek : req.query.dayofweek,
-      typeofweek : req.query.typeofweek
+      typeofweek : weektype
     });
-    lessonInstance.save()
+    var resultOfSave = await lessonInstance.save()
 
     if(req.query.OnceInTwoWeeks === 'true'){
       currDate.setDate(currDate.getDate() + 14)
@@ -230,7 +237,14 @@ app.post('/api/create-lessons', async (req, res) => {
   res.json({ data: dataToSend });
 });
 
+function weeksBetween(d1, d2) 
+{
+  if (!d1 || !d2) return 0
 
+  d1 = new Date(d1)
+  d2 = new Date(d2)
+  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+}
 
 
 var cors = require('cors');
