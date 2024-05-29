@@ -11,6 +11,11 @@ class StaticModal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    console.log(props.currentLesson)
+
     if(props.currentLesson !== null){
       this.state = {
         currentStaff : props.currentLesson.staff,
@@ -22,6 +27,7 @@ class StaticModal extends React.Component {
         date : props.currentLesson.date,
         frequency: props.currentLesson.frequency,
         duration: props.currentLesson.duration,
+        showModal: true
       }
     }
     else{
@@ -35,11 +41,18 @@ class StaticModal extends React.Component {
         date : '',
         frequency: '',
         duration: '',
+        showModal: true
       }
     }
+  }
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClose = this.handleClose.bind(this)
+  handleClose() {
+    this.setState({ showModal: false });
+  }
+
+  handleSubmit() {
+    // Handle form submission
+    this.handleClose();
   }
 
   async updateSubject(event){
@@ -117,9 +130,10 @@ class StaticModal extends React.Component {
     let studentgroup = this.props.studentgroup
     let semestr = this.props.semestr
     let frequency = this.state.frequency
+    let duration = this.state.duration
 
     axios.post('http://localhost:9090/api/create-lessons', null, { 
-      params: { staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging, studentgroup, semestr, frequency } 
+      params: { staff, subject, timeslot, classtype, classroom, date, typeofweek, dayofweek, OnceInTwoWeeks, beforeScheduleChanging, afterScheduleChanging, studentgroup, semestr, frequency, duration } 
     })
     .then(response => {
       return(200)
@@ -229,99 +243,102 @@ class StaticModal extends React.Component {
   }    
 
 
-  render(){
-    return ( 
-      <div style={{ display: 'block', 
-                    position:'absolute',
-                    width: 700,  
-                    padding: 30,
-                    backgroundColor:'white' }}> 
-        <Modal.Dialog> 
-          <Modal.Header closeButton> 
-            <Modal.Title> 
-            Форма добавления новых занятий
-            </Modal.Title> 
-          </Modal.Header> 
+  render() {
+    return (
+      <>
+        <Modal
+          show={this.state.showModal}
+          onHide={this.handleClose}
+          backdrop="static"
+          keyboard={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Форма добавления новых занятий</Modal.Title>
+          </Modal.Header>
           <Modal.Body>
+            <Form>
+              <p>Выберите предмет</p>
+              <Form.Select aria-label="Выберите предмет" name="subject" onChange={e => this.updateSubject(e)}>
+                {this.subject.map(item => (
+                  <option key={item.id} value={item.id} selected={this.props.currentLesson != null ? item.id === this.props.currentLesson.subject : false}>
+                    {item.name}
+                  </option>
+                ))}
+                <option selected={this.props.currentLesson == null}></option>
+              </Form.Select>
 
-          <Form> 
-            <p>Выберите предмет</p>
-            <Form.Select aria-label="Выберите предмет" name="subject" onChange={e => this.updateSubject(e)}>
-            {this.subject.map(item => 
-            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.subject : false}>{item.name}</option>)
-            }
-            <option selected = {this.props.currentLesson == null}></option>
-            </Form.Select>
+              <p>Выберите преподавателя</p>
+              <Form.Select aria-label="Выберите преподавателя" name="staff" onChange={e => this.updateStaff(e)}>
+                {this.staff.map(item => (
+                  <option key={item.id} value={item.id} selected={this.props.currentLesson != null ? item.id === this.props.currentLesson.staff : false}>
+                    {item.fio}
+                  </option>
+                ))}
+                <option selected={this.props.currentLesson == null}></option>
+              </Form.Select>
 
-            <p>Выберите преподавателя</p>
-            <Form.Select aria-label="Выберите преподавателя" name="staff" onChange={e => this.updateStaff(e)}>
-            {this.staff.map(item => 
-            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.staff : false}>{item.fio}</option>)
-            }
-            <option selected = {this.props.currentLesson == null}></option>
-            </Form.Select>
+              <p>Выберите пару</p>
+              <Form.Select aria-label="Выберите пару" name="timeslot" onChange={e => this.updateTimeslot(e)}>
+                {this.timeslot.map(item => (
+                  <option key={item.id} value={item.id} selected={this.props.currentLesson != null ? item.id === this.props.currentLesson.timeslot : false}>
+                    {item.number}
+                  </option>
+                ))}
+                <option selected={this.props.currentLesson == null}></option>
+              </Form.Select>
 
-            <p>Выберите пару</p>
-            <Form.Select aria-label="Выберите пару" name="timeslot" onChange={e => this.updateTimeslot(e)}>
-            {this.timeslot.map(item => 
-            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.timeslot : false}>{item.number}</option>)
-            }
-            <option selected = {this.props.currentLesson == null}></option>
-            </Form.Select>
+              <p>Выберите тип занятия</p>
+              <Form.Select aria-label="Выберите тип занятия" name="classtype" onChange={e => this.updateClasstype(e)}>
+                {this.classtype.map(item => (
+                  <option key={item.id} value={item.id} selected={this.props.currentLesson != null ? item.id === this.props.currentLesson.classtype : false}>
+                    {item.name}
+                  </option>
+                ))}
+                <option selected={this.props.currentLesson == null}></option>
+              </Form.Select>
 
-            <p>Выберите тип занятия</p>
-            <Form.Select aria-label="Выберите тип занятия" name="classtype" onChange={e => this.updateClasstype(e)}>
-            {this.classtype.map(item => 
-            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classtype : false}>{item.name}</option>)
-            }
-            <option selected = {this.props.currentLesson == null}></option>
-            </Form.Select>
+              <p>Выберите аудиторию</p>
+              <Form.Select aria-label="Выберите аудиторию" name="classroom" onChange={e => this.updateClassroom(e)}>
+                {this.classroom.map(item => (
+                  <option key={item.id} value={item.id} selected={this.props.currentLesson != null ? item.id === this.props.currentLesson.classroom : false}>
+                    {item.name}
+                  </option>
+                ))}
+                <option selected={this.props.currentLesson == null}></option>
+              </Form.Select>
 
-            <p>Выберите аудиторию</p>
-            <Form.Select aria-label="Выберите аудиторию" name="classroom" onChange={e => this.updateClassroom(e)}>
-            {this.classroom.map(item => 
-            <option value={item.id} selected = {this.props.currentLesson != null ? item.id === this.props.currentLesson.classroom : false}>{item.name}</option>)
-            }
-            <option selected = {this.props.currentLesson == null}></option>
-            </Form.Select>
-            
-            <p>Дата первого занятия в семестре</p>
-            <input type="date" name="firstdate"  
-            onChange={e => this.updateDate(e)}/>
+              <p>Дата первого занятия в семестре</p>
+              <input type="date" name="firstdate" defaultValue={this.props.currentLesson?.date} onChange={e => this.updateDate(e)} />
 
-            <p>Каждый числитель/знаменатель</p>
-            <input type="radio" name="frequency" value = "0" 
-            onChange={e => this.updateFrequency(e)}/>
+              <p>Каждый числитель/знаменатель</p>
+              <input type="radio" name="frequency" value="0" checked={this.props.currentLesson?.frequency == '0' || this.state.frequency === '0'} onChange={e => this.updateFrequency(e)} />
+              <label>Каждый числитель/знаменатель</label>
 
-            <p>Через один числитель/знаменатель</p>
-            <input type="radio" name="frequency" value = "1" 
-            onChange={e => this.updateFrequency(e)}/>
+              <p>Через один числитель/знаменатель</p>
+              <input type="radio" name="frequency" value="1" checked={this.props.currentLesson?.frequency == '1'|| this.state.frequency === '1'} onChange={e => this.updateFrequency(e)} />
+              <label>Через один числитель/знаменатель</label>
 
-            <p>До смены расписания</p>
-            <input type="radio" name="duration" value = "0"
-            onChange={e => this.updateDuration(e)}/>
+              <p>До смены расписания</p>
+              <input type="radio" name="duration" value="0" checked={this.props.currentLesson?.duration == '0' || this.state.duration === '0'} onChange={e => this.updateDuration(e)} />
+              <label>До смены расписания</label>
 
-            <p>После смены расписания</p>
-            <input type="radio" name="duration" value = "1"
-            onChange={e => this.updateDuration(e)}/>
+              <p>После смены расписания</p>
+              <input type="radio" name="duration" value="1" checked={this.props.currentLesson?.duration == '1' || this.state.duration === '1'} onChange={e => this.updateDuration(e)} />
+              <label>После смены расписания</label>
 
-            <p>До и после смены расписания</p>
-            <input type="radio" name="duration" value = "2" 
-            onChange={e => this.updateDuration(e)}/>
-
-          </Form>
-          </Modal.Body> 
-          <Modal.Footer> 
-            <Button variant="primary" onClick={this.handleSubmit}> 
-            Сохранить
-            </Button> 
-            <Button variant="secondary"onClick={this.handleClose}> 
-            Закрыть
-            </Button> 
-          </Modal.Footer> 
-        </Modal.Dialog> 
-      </div> 
-    ); 
+              <p>До и после смены расписания</p>
+              <input type="radio" name="duration" value="2" checked={this.props.currentLesson?.duration == '2' || this.state.duration === '2'} onChange={e => this.updateDuration(e)} />
+              <label>До и после смены расписания</label>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={this.handleSubmit}>Сохранить</Button>
+            <Button variant="secondary" onClick={this.handleClose}>Закрыть</Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
   }
 }
 

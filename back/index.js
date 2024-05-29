@@ -202,8 +202,8 @@ app.post('/api/create-lessons', async (req, res) => {
 
   while(currDate < endDate)
   {
-    if(req.query.beforeScheduleChanging === 'true' && currDate > changeSheduleDate) break;
-    if(req.query.afterScheduleChanging === 'true' && currDate < changeSheduleDate){
+    if(req.query.duration === '0' && currDate > changeSheduleDate) break;
+    if(req.query.duration === '1' && currDate < changeSheduleDate){
       currDate.setDate(currDate.getDate() + 7)
        continue;
       }
@@ -219,11 +219,13 @@ app.post('/api/create-lessons', async (req, res) => {
       date : currDate,
       semestr: semestr[0].dataValues['id'].toString(),
       dayofweek : req.query.dayofweek,
-      typeofweek : weektype
+      typeofweek : weektype,
+      duration : req.query.duration,
+      frequency : req.query.frequency
     });
     var resultOfSave = await lessonInstance.save()
 
-    if(req.query.OnceInTwoWeeks === 'true'){
+    if(req.query.frequency === '0'){
       currDate.setDate(currDate.getDate() + 14)
     }
     else{

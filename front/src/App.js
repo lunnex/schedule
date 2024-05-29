@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import qs from 'qs'
 import Table from './components/table'
-import Modal from "./components/modal";
+import Modal from "./components/modal"
+import Footer from "./components/footer"
+import Header from "./components/header"
 
 
 const App = () => {
@@ -100,6 +102,8 @@ const App = () => {
 
   return (
     <div>
+    <Header/>
+
     <label htmlFor="group-select">Группа: </label>
       <select id="group-select" onChange={handleGroupChange} value={selectedGroupId}>
       {groups.map((group) => (
@@ -112,7 +116,7 @@ const App = () => {
       <h1>Числитель</h1>
       <tr>
         <td>
-          {lessons.length > 0 && lessons[0][1] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][1] && 
           <Table data={lessons[0][1]} typeofweek = {0} dayofweek = {1}
           deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
           setCurrentLessonState = {setCurrentLessonState}/> 
@@ -120,7 +124,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[0][2] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][2] && 
             <Table data={lessons[0][2]} typeofweek = {0} dayofweek = {2}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -128,7 +132,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[0][3] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][3] && 
             <Table data={lessons[0][3]} typeofweek = {0} dayofweek = {3}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -139,7 +143,7 @@ const App = () => {
         <tr>
 
         <td>
-          {lessons.length > 0 && lessons[0][4] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][4] && 
             <Table data={lessons[0][4]} typeofweek = {0} dayofweek = {4}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -147,7 +151,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[0][5] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][5] && 
             <Table data={lessons[0][5]} typeofweek = {0} dayofweek = {5}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -155,7 +159,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[0][6] && 
+          {lessons.length > 0 && lessons[0] && lessons[0][6] && 
             <Table data={lessons[0][6]} typeofweek = {0} dayofweek = {6}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -166,7 +170,7 @@ const App = () => {
       <h1>Знаменатель</h1>
       <tr>
         <td>
-          {lessons.length > 0 && lessons[1][1] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][1] && 
           <Table data={lessons[1][1]} typeofweek = {1} dayofweek = {1}
           deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
           setCurrentLessonState = {setCurrentLessonState}/> 
@@ -174,7 +178,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[1][2] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][2] && 
             <Table data={lessons[1][2]} typeofweek = {1} dayofweek = {2}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -182,7 +186,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[1][3] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][3] && 
             <Table data={lessons[1][3]} typeofweek = {1} dayofweek = {3}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -193,7 +197,7 @@ const App = () => {
         <tr>
 
         <td>
-          {lessons.length > 0 && lessons[1][4] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][4] && 
             <Table data={lessons[1][4]} typeofweek = {1} dayofweek = {4}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -201,7 +205,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[1][5] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][5] && 
             <Table data={lessons[1][5]} typeofweek = {1} dayofweek = {5}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -209,7 +213,7 @@ const App = () => {
         </td>
 
         <td>
-          {lessons.length > 0 && lessons[1][6] && 
+          {lessons.length > 0 && lessons[1] && lessons[1][6] && 
             <Table data={lessons[1][6]} typeofweek = {1} dayofweek = {6}
             deleteLessons = {deleteLessons} openModal = {openModal} closeModal = {closeModal} 
             setCurrentLessonState = {setCurrentLessonState}/> 
@@ -224,6 +228,7 @@ const App = () => {
         semestr={1} closeModal = {closeModal} currentLesson = {currentLesson} deleteLessons = {deleteLessons}></Modal>
       }
     </table>
+<Footer/>
 </div>
   );
 }

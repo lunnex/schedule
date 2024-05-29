@@ -74,6 +74,14 @@ module.exports = function(sequelize, DataTypes) {
     typeofweek: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    frequency: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,
