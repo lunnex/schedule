@@ -218,6 +218,122 @@ form input[type="radio"] + label {
   background-color: #5a6268;
 }
 
+.panel {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+}
 
+.panel h1 {
+  margin-top: 0;
+}
 
+/* Container for the select element */
+.select-container {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+/* Label styling */
+.select-container label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* Custom select styling */
+.select-container select {
+  width: 200px;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: white;
+  font-size: 16px;
+  -webkit-appearance: none; /* Remove default arrow in Chrome */
+  -moz-appearance: none; /* Remove default arrow in Firefox */
+  appearance: none; /* Remove default arrow */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.362" height="292.362" viewBox="0 0 292.362 292.362"><path fill="%23000" d="M287.719 69.578c-7.613-7.614-19.923-7.614-27.534 0L146.181 183.583 32.174 69.577c-7.613-7.613-19.921-7.613-27.534 0-7.613 7.613-7.613 19.922 0 27.534l127.186 127.187c3.807 3.807 8.794 5.71 13.768 5.71s9.961-1.903 13.768-5.71l127.187-127.187c7.613-7.612 7.613-19.921 0-27.534z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+/* Option styling */
+.select-container option {
+  padding: 10px;
+}
+
+/* Container */
+.university-contacts-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.university-contacts-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Subheading */
+.university-contacts-page h2 {
+  margin-top: 30px;
+  color: #555;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* Contact list container */
+.department-contacts {
+  margin-top: 20px;
+}
+
+/* Contact list styling */
+.department-contacts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.department-contacts li {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+/* Contact details */
+.contact-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-details span {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Button styling */
+.university-contacts-page button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+}
+
+.university-contacts-page button:hover {
+  background-color: #c82333;
+}
 

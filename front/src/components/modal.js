@@ -142,7 +142,7 @@ class StaticModal extends React.Component {
       return(error)
     });
 
-    this.forceUpdate();
+    window.location.reload();
 
   }
 

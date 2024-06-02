@@ -198,7 +198,7 @@ app.post('/api/create-lessons', async (req, res) => {
   let beginDate = new Date(Date.parse(semestr[0].dataValues['startdate']))
   let changeSheduleDate =  new Date(Date.parse(semestr[0].dataValues['changescheduledate']))
   let lessonInstance = []
-  let weektype = Math.round(weeksBetween(beginDate, currDate) / 2)
+  let weektype = weeksBetween(beginDate, currDate)
 
   while(currDate < endDate)
   {
@@ -245,7 +245,7 @@ function weeksBetween(d1, d2)
 
   d1 = new Date(d1)
   d2 = new Date(d2)
-  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+  return Math.floor((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
 }
 
 
